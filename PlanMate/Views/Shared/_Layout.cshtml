@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AdminLTE 3 | Top Navigation</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="/Content/AdminLTE-3.1.0/plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="/Content/AdminLTE-3.1.0/dist/css/adminlte.min.css">
+    @RenderSection("Styles", required: false)
+    <style>
+        .navbar-custom {
+            background-color: #003366; /* Koyu mavi */
+            padding: 15px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .navbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1140px; /* Bootstrap'in container genişliğine uygun */
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            color: #ffffff; /* Beyaz yazı */
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .navbar-nav-custom {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: inline-flex;
+            gap: 30px;
+        }
+
+            .navbar-nav-custom a {
+                color: #ffffff; /* Beyaz yazı */
+                font-size: 20px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: color 0.3s ease;
+            }
+
+                .navbar-nav-custom a:hover {
+                    color: #cccccc; /* Açık gri hover efekti */
+                }
+    </style>
+
+</head>
+<body class="hold-transition layout-top-nav">
+    <div class="wrapper">
+
+        <nav class="navbar-custom">
+            <div class="navbar-container">
+                <a href="@Url.Action("Index", "Calendar")" class="navbar-brand">PlanMate</a>
+                <ul class="navbar-nav-custom">
+                    <li><a href="@Url.Action("Index", "Calendar")">Takvim</a></li>
+                    <li><a href="@Url.Action("Index", "Event")">Etkinlik</a></li>
+                    <li><a href="@Url.Action("Index", "Category")"> Kategori</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="content-wrapper" style="margin-left: 0; margin-top: 60px;">
+            @RenderBody()
+        </div>
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+        <footer class="main-footer">
+            <div class="float-right d-none d-sm-inline">
+                Anything you want
+            </div>
+            <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
+        </footer>
+    </div>
+    <script src="/Content/AdminLTE-3.1.0/plugins/jquery/jquery.min.js"></script>
+    <script src="/Content/AdminLTE-3.1.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/Content/AdminLTE-3.1.0/dist/js/adminlte.min.js"></script>
+    <script src="/Content/AdminLTE-3.1.0/dist/js/demo.js"></script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

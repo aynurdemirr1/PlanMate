@@ -1,0 +1,287 @@
+﻿﻿
+<script src="/AdminLTE-3.1.0/plugins/jquery/jquery.min.js"></script>
+<script src="/AdminLTE-3.1.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="/AdminLTE-3.1.0/plugins/jquery-ui/jquery-ui.min.js"></script>
+<script src="/AdminLTE-3.1.0/dist/js/adminlte.min.js"></script>
+<script src="/AdminLTE-3.1.0/plugins/moment/moment.min.js"></script>
+<script src="/AdminLTE-3.1.0/plugins/fullcalendar/main.js"></script>
+<script src="/AdminLTE-3.1.0/plugins/fullcalendar/locales/tr.js"></script>
+
+<script src="/AdminLTE-3.1.0/dist/js/demo.js"></script>
+
+<script>
+
+    var selectedCategoryId = 0;
+    var selectedCategoryColor = '#3788d8';
+
+    $(function () {
+
+        $.get('/Category/GetCategories', function (categories) {
+            let chooser = $('#color-chooser');
+            chooser.empty();
+
+            categories.forEach(function (category) {
+                let li = $('<li/>');
+                let a = $('<a/>')
+                    .addClass('category-select')
+                    .attr('href', '#')
+                    .attr('data-category-id', category.CategoryId)
+                    .attr('data-category-name', category.CategoryName)
+                    .attr('data-category-color', category.CategoryColor)
+                    .css('color', category.CategoryColor)
+                    .html('<i class="fas fa-square"></i>');
+
+                li.append(a);
+                chooser.append(li);
+            });
+        });
+
+        $(document).on('click', '.color-circle', function () {
+            var categoryId = $(this).data('category-id');
+
+            console.log('Renk dairesine tıklandı - Kategori ID:', categoryId);
+
+            $('.color-circle').removeClass('active');
+            $(this).addClass('active');
+
+            $('#category-dropdown').val(categoryId);
+
+            selectedCategoryId = parseInt(categoryId);
+            selectedCategoryColor = $('#category-dropdown option:selected').data('color');
+
+            console.log('Renk dairesi - Seçilen renk:', selectedCategoryColor);
+
+            $('#add-new-event').css({
+                'background-color': selectedCategoryColor,
+                'border-color': selectedCategoryColor
+            });
+        });
+
+        $('#category-dropdown').on('change', function () {
+            var selectedOption = $(this).find('option:selected');
+            selectedCategoryId = parseInt(selectedOption.val());
+            selectedCategoryColor = selectedOption.data('color');
+
+            console.log('Dropdown değişti - Kategori ID:', selectedCategoryId);
+            console.log('Dropdown değişti - Renk:', selectedCategoryColor);
+
+            var selectedId = $(this).val();
+            $('.color-circle').removeClass('active');
+            $('.color-circle[data-category-id="' + selectedId + '"]').addClass('active');
+
+            $('#add-new-event').css({
+                'background-color': selectedCategoryColor,
+                'border-color': selectedCategoryColor
+            });
+        });
+
+
+        $('#color-chooser').on('click', '.category-select', function (e) {
+            e.preventDefault();
+
+            $('.category-select').parent().removeClass('selected-category');
+            $(this).parent().addClass('selected-category');
+
+            selectedCategoryId = parseInt($(this).data('category-id'));
+            selectedCategoryColor = $(this).data('category-color');
+
+            console.log('Color chooser - Seçilen kategori ID:', selectedCategoryId);
+            console.log('Color chooser - Seçilen kategori rengi:', selectedCategoryColor);
+
+            $('#add-new-event').css({
+                'background-color': selectedCategoryColor,
+                'border-color': selectedCategoryColor
+            });
+        });
+
+        $(document).ready(function () {
+            var firstOption = $('#category-dropdown option:first');
+            if (firstOption.length > 0) {
+                selectedCategoryId = parseInt(firstOption.val());
+                selectedCategoryColor = firstOption.data('color');
+
+                $('.color-circle[data-category-id="' + selectedCategoryId + '"]').addClass('active');
+
+                $('#add-new-event').css({
+                    'background-color': selectedCategoryColor,
+                    'border-color': selectedCategoryColor
+                });
+
+                console.log('Sayfa yüklendi - Otomatik seçilen kategori ID:', selectedCategoryId);
+                console.log('Sayfa yüklendi - Otomatik seçilen renk:', selectedCategoryColor);
+            }
+        });
+
+        function ini_events(ele) {
+            ele.each(function () {
+                var eventObject = { title: $.trim($(this).text()) };
+                $(this).data('eventObject', eventObject);
+
+                $(this).draggable({
+                    zIndex: 1070,
+                    revert: true,
+                    revertDuration: 0
+                });
+            });
+        }
+
+        ini_events($('#external-events div.external-event'));
+
+        var Calendar = FullCalendar.Calendar;
+        var Draggable = FullCalendar.Draggable;
+
+        // Etkinlikleri takvime sürüklenebilir hale getir
+        new Draggable(document.getElementById('external-events'), {
+            itemSelector: '.external-event',
+            eventData: function (eventEl) {
+                return {
+                    title: eventEl.innerText.trim(),
+                    backgroundColor: selectedCategoryColor,
+                    borderColor: selectedCategoryColor,
+                    textColor: '#fff',
+                    extendedProps: {
+                        categoryId: $(eventEl).attr('data-category-id') || selectedCategoryId,
+                        categoryName: $(eventEl).attr('data-category-name')
+                    }
+                };
+            }
+        });
+
+        // ==================== FULLCALENDAR KURULUMU ====================
+        var calendar = new Calendar(document.getElementById('calendar'), {
+            locale: 'tr',
+            displayEventTime: false,
+            allDay: true,
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            themeSystem: 'bootstrap',
+            editable: true,
+            droppable: true,
+            selectable: true,
+            events: '/Event/GetEvents',
+
+            // ==================== ETKİNLİK TAKVIME EKLENDİĞİNDE ====================
+            eventReceive: function (info) {
+                console.log('Etkinlik takvime eklendi - Kategori ID:', selectedCategoryId);
+
+                // Kategori seçimi kontrolü
+                if (selectedCategoryId === 0 || !selectedCategoryId) {
+                    alert('Lütfen önce kategori seçin!');
+                    info.revert();
+                    return;
+                }
+
+                // Etkinliği veritabanına kaydet
+                $.ajax({
+                    type: 'POST',
+                    url: '/Event/CreateEvent',
+                    data: {
+                        Title: info.event.title,
+                        Start: info.event.start.toISOString(),
+                        End: info.event.end ? info.event.end.toISOString() : null,
+                        AllDay: info.event.allDay,
+                        BackgroundColor: info.event.backgroundColor,
+                        BorderColor: info.event.borderColor,
+                        categoryId: selectedCategoryId
+                    },
+                    success: function (res) {
+                        console.log('Etkinlik kaydetme sonucu:', res);
+                        if (res.success) {
+                            info.event.setProp('id', res.id);
+                            info.event.setExtendedProp('id', res.id);
+                            info.event.setExtendedProp('categoryId', selectedCategoryId);
+                        } else {
+                            alert('Etkinlik kaydedilemedi: ' + (res.error || 'Bilinmeyen hata'));
+                            info.revert();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Hatası:', xhr.responseText);
+                        alert('Sunucu hatası: ' + error);
+                        info.revert();
+                    }
+                });
+            },
+
+            // ==================== ETKİNLİK TAŞINDIĞINDA ====================
+            eventDrop: function (info) {
+                $.post('/Event/UpdateDroppedEvent', {
+                    id: info.event.id || info.event.extendedProps.id,
+                    start: info.event.start.toISOString(),
+                    end: info.event.end ? info.event.end.toISOString() : null
+                }).fail(function () {
+                    alert('Etkinlik güncellenemedi.');
+                    info.revert();
+                });
+            },
+
+            // ==================== ETKİNLİK BOYUTU DEĞİŞTİRİLDİĞİNDE ====================
+            eventResize: function (info) {
+                $.post('/Event/UpdateDroppedEvent', {
+                    id: info.event.id || info.event.extendedProps.id,
+                    start: info.event.start.toISOString(),
+                    end: info.event.end.toISOString()
+                }).fail(function () {
+                    alert('Etkinlik uzatılamadı.');
+                    info.revert();
+                });
+            }
+        });
+
+        calendar.render();
+
+        // ==================== YENİ ETKİNLİK EKLEME BUTONU ====================
+        $('#add-new-event').click(function (e) {
+            e.preventDefault();
+
+            // Input değerini al ve temizle
+            var val = $('#new-event').val().trim();
+
+            if (!val) {
+                alert('Lütfen etkinlik başlığı girin!');
+                return;
+            }
+
+            // Kategori seçim kontrolü
+            if (selectedCategoryId === 0 || !selectedCategoryId) {
+                alert('Lütfen kategori seçin!');
+                return;
+            }
+
+            console.log('Yeni etkinlik ekleniyor:', val);
+            console.log('Kategori ID:', selectedCategoryId);
+            console.log('Kategori rengi:', selectedCategoryColor);
+
+            // Yeni etkinlik elementi oluştur
+            var event = $('<div />')
+                .addClass('external-event')
+                .css({
+                    'background-color': selectedCategoryColor,
+                    'border-color': selectedCategoryColor,
+                    'color': '#fff',
+                    'margin-bottom': '5px',
+                    'cursor': 'move',
+                    'padding': '5px 10px',
+                    'border-radius': '3px'
+                })
+                .text(val) // Kullanıcının girdiği başlık
+                .attr('data-category-id', selectedCategoryId) // Kategori ID'sini sakla
+                .attr('data-category-name', $('#category-dropdown option:selected').text()); // Kategori adını sakla
+
+            // Etkinliği listeye ekle
+            $('#external-events').prepend(event);
+
+            // Yeni etkinliği draggable yap
+            ini_events(event);
+
+            // Input'u temizle
+            $('#new-event').val('');
+
+            console.log('Yeni etkinlik başarıyla eklendi');
+        });
+
+    });
+</script>

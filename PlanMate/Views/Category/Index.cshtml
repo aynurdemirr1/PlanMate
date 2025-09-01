@@ -1,0 +1,183 @@
+﻿@model IEnumerable<PlanMate.Entities.Category>
+
+@{
+    ViewBag.Title = "Kategoriler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .card {
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        color: #34495e;
+        font-weight: 600;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .category-card {
+        border: 1px solid #dee2e6;
+    }
+
+    .category-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #34495e;
+        margin-bottom: 5px;
+    }
+
+    .category-description {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 10px;
+    }
+
+    .category-color-box {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        vertical-align: middle;
+        margin-right: 5px;
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .btn-edit-custom {
+        background-color: #3498db;
+        border-color: #3498db;
+        color: #fff;
+        font-weight: 500;
+        border-radius: 5px;
+        padding: 8px 15px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+        .btn-edit-custom:hover {
+            background-color: #2184c6;
+            border-color: #2184c6;
+            color: #fff;
+        }
+
+    .btn-delete-custom {
+        background-color: #e74c3c;
+        border-color: #e74c3c;
+        color: #fff;
+        font-weight: 500;
+        border-radius: 5px;
+        padding: 8px 15px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+        .btn-delete-custom:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+            color: #fff;
+        }
+
+    .btn-add-category {
+        background-color: #2ecc71;
+        border-color: #2ecc71;
+        color: #fff;
+        font-weight: 500;
+        border-radius: 5px;
+        padding: 8px 15px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+        .btn-add-category:hover {
+            background-color: #27ae60;
+            border-color: #27ae60;
+            color: #fff;
+        }
+
+    .info-box {
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        border: 1px solid #dee2e6;
+    }
+
+        .info-box .info-box-icon {
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+        }
+
+    .bg-info-custom {
+        background-color: #3498db !important;
+    }
+
+    .bg-success-custom {
+        background-color: #2ecc71 !important;
+    }
+
+    .bg-warning-custom {
+        background-color: #f39c12 !important;
+    }
+
+    .bg-danger-custom {
+        background-color: #e74c3c !important;
+    }
+</style>
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Kategoriler</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                <a href="@Url.Action("Create", "Category")" class="btn btn-add-category">
+                    <i class="fa fa-plus-circle"></i> Yeni Kategori Ekle
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            @if (Model != null && Model.Any())
+            {
+                foreach (var item in Model)
+                {
+                    <div class="col-md-4">
+                        <div class="card card-outline category-card" style="border-top-color: @item.Color;">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <span class="category-color-box" style="background-color:@item.Color;"></span>
+                                    <span class="category-title">@Html.DisplayFor(modelItem => item.Name)</span>
+                                </h3>
+                                <div class="card-tools">
+                                    <a href="@Url.Action("Edit", "Category", new { id = item.Id })" class="btn btn-tool btn-edit-custom">
+                                        <i class="fas fa-pencil-alt"></i> Düzenle
+                                    </a>
+                                    <a href="@Url.Action("Delete", "Category", new { id = item.Id })" class="btn btn-tool btn-delete-custom">
+                                        <i class="fas fa-trash"></i> Sil
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <p class="category-description">@Html.DisplayFor(modelItem => item.Description)</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        Henüz hiç kategori bulunmamaktadır. Yeni bir kategori eklemek için "Yeni Kategori Ekle" butonunu kullanın.
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

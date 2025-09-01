@@ -1,0 +1,32 @@
+﻿﻿
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+@Html.Partial("/Views/Layout/PartialHead.cshtml")
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        </div>
+
+        @Html.Partial("/Views/Layout/PartialNavbar.cshtml")
+
+        @Html.Partial("/Views/Layout/PartialSidebar.cshtml")
+
+        @RenderBody()
+
+        @Html.Partial("/Views/Layout/PartialFooter.cshtml")
+
+        <aside class="control-sidebar control-sidebar-dark">
+        </aside>
+    </div>
+    @Html.Partial("/Views/Layout/PartialScript.cshtml")
+
+</body>
+</html>

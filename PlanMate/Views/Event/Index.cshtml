@@ -1,0 +1,317 @@
+﻿@using System.Linq
+
+@model IEnumerable<PlanMate.Entities.Event>
+@{
+    ViewBag.Title = "Etkinlikler";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Genel Kart ve Buton Stilleri */
+    .card {
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        margin-bottom: 20px;
+    }
+
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        color: #34495e;
+        font-weight: 600;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .event-card {
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        transition: transform 0.2s ease-in-out;
+    }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .event-title {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #34495e;
+    }
+
+    .event-description {
+        color: #6c757d;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 10px;
+    }
+
+    /* Buton Stilleri */
+    .btn-add-event {
+        background-color: #2ecc71;
+        border-color: #2ecc71;
+        color: #fff;
+        font-weight: 500;
+        border-radius: 5px;
+        padding: 8px 15px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+        .btn-add-event:hover {
+            background-color: #27ae60;
+            border-color: #27ae60;
+            color: #fff;
+        }
+
+    .btn-edit-custom {
+        background-color: #3498db;
+        border-color: #3498db;
+        color: #fff;
+        font-weight: 500;
+        border-radius: 5px;
+        padding: 8px 15px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+        .btn-edit-custom:hover {
+            background-color: #2184c6;
+            border-color: #2184c6;
+            color: #fff;
+        }
+
+    .btn-delete-custom {
+        background-color: #e74c3c;
+        border-color: #e74c3c;
+        color: #fff;
+        font-weight: 500;
+        border-radius: 5px;
+        padding: 8px 15px;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+        .btn-delete-custom:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+            color: #fff;
+        }
+
+    .empty-state {
+        padding: 50px 0;
+    }
+
+        .empty-state .fa-4x {
+            font-size: 4em;
+        }
+
+    /* İstatistik Kutucukları için Özel Renkler */
+    .bg-info-custom {
+        background-color: #3498db !important;
+    }
+
+    .bg-success-custom {
+        background-color: #2ecc71 !important;
+    }
+
+    .bg-warning-custom {
+        background-color: #f39c12 !important;
+    }
+
+    .bg-danger-custom {
+        background-color: #e74c3c !important;
+    }
+</style>
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Etkinlikler</h1>
+            </div>
+            <div class="col-sm-6 text-right">
+                <a href="@Url.Action("Create")" class="btn btn-add-event">
+                    <i class="fas fa-plus-circle"></i> Yeni Etkinlik Ekle
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-calendar-alt"></i> Etkinlik Yönetimi
+                        </h3>
+                    </div>
+
+                    <div class="card-body">
+                        @if (Model != null && Model.Any())
+                        {
+                            <div class="row">
+                                @foreach (var item in Model)
+                                {
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                                        <div class="card h-100 event-card" style="border-left: 4px solid @(item.Category?.Color ?? "#3c8dbc");">
+                                            <div class="card-header" style="background-color: rgba(@(item.Category?.Color?.Replace("#", "") ?? "60,141,188"), 0.1);">
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <h5 class="card-title mb-0">
+                                                        <i class="fas fa-calendar-day" style="color: @(item.Category?.Color ?? "#3c8dbc");"></i>
+                                                        @item.Title
+                                                    </h5>
+                                                    <span class="badge badge-secondary">#@item.Id</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="card-body">
+                                                <div class="mb-3">
+                                                    <strong>Kategori:</strong>
+                                                    <span class="badge" style="background-color: @(item.Category?.Color ?? "#3c8dbc"); color: white;">
+                                                        @(item.Category?.Name ?? "Kategorisiz")
+                                                    </span>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <strong>Başlangıç:</strong>
+                                                    <p class="text-muted mb-1">
+                                                        <i class="far fa-calendar-alt"></i>
+                                                        @(item.StartDate.HasValue ? item.StartDate.Value.ToString("dd.MM.yyyy") : "Tarih belirlenmedi")
+                                                    </p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <strong>Bitiş:</strong>
+                                                    <p class="text-muted mb-1">
+                                                        <i class="far fa-calendar-check"></i>
+                                                        @(item.EndDate.HasValue ? item.EndDate.Value.ToString("dd.MM.yyyy") : "Tarih belirlenmedi")
+                                                    </p>
+                                                </div>
+
+                                                <div class="mb-3">
+                                                    <strong>Açıklama:</strong>
+                                                    <p class="text-muted mb-0">
+                                                        @if (!string.IsNullOrEmpty(item.Description))
+                                                        {
+                                                            @item.Description
+                                                        }
+                                                        else
+                                                        {
+                                                            <em>Açıklama bulunmuyor</em>
+                                                        }
+                                                    </p>
+                                                </div>
+
+                                                <div class="mt-3">
+                                                    <strong>Durum:</strong>
+                                                    @if (item.IsAllDay)
+                                                    {
+                                                        <span class="badge badge-success">Tüm Gün</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge badge-info">Belirli Saat</span>
+                                                    }
+                                                </div>
+                                            </div>
+
+                                            <div class="card-footer bg-transparent">
+                                                <div class="btn-group w-100" role="group">
+                                                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-edit-custom btn-sm" title="Düzenle">
+                                                        <i class="fas fa-edit"></i> Düzenle
+                                                    </a>
+                                                    <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-delete-custom btn-sm" title="Sil">
+                                                        <i class="fas fa-trash"></i> Sil
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="card card-outline card-info">
+                                        <div class="card-header">
+                                            <h3 class="card-title">
+                                                <i class="fas fa-chart-bar"></i> Etkinlik İstatistikleri
+                                            </h3>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <div class="info-box">
+                                                        <span class="info-box-icon bg-info-custom">
+                                                            <i class="fas fa-calendar-alt"></i>
+                                                        </span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Toplam Etkinlik</span>
+                                                            <span class="info-box-number">@Model.Count()</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="info-box">
+                                                        <span class="info-box-icon bg-success-custom">
+                                                            <i class="fas fa-calendar-day"></i>
+                                                        </span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Tüm Gün Etkinlikler</span>
+                                                            <span class="info-box-number">@Model.Count(e => e.IsAllDay)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="info-box">
+                                                        <span class="info-box-icon bg-warning-custom">
+                                                            <i class="fas fa-calendar-week"></i>
+                                                        </span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Bu Hafta</span>
+                                                            <span class="info-box-number">@Model.Count(e => e.StartDate >= DateTime.Now.AddDays(-7))</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="info-box">
+                                                        <span class="info-box-icon bg-info-custom">
+                                                            <i class="fas fa-calendar-month"></i>
+                                                        </span>
+                                                        <div class="info-box-content">
+                                                            <span class="info-box-text">Bu Ay</span>
+                                                            <span class="info-box-number">@Model.Count(e => e.StartDate.HasValue && e.StartDate.Value.Month == DateTime.Now.Month)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="fas fa-calendar-alt fa-4x text-muted mb-3"></i>
+                                    <h4 class="text-muted">Henüz etkinlik eklenmemiş</h4>
+                                    <p class="text-muted">İlk etkinliği ekleyerek başlayın</p>
+                                    <a href="@Url.Action("Create")" class="btn btn-add-event">
+                                        <i class="fas fa-plus"></i> İlk Etkinliği Ekle
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@section Styles {
+    <link rel="stylesheet" href="~/Content/event-styles.css">
+}
