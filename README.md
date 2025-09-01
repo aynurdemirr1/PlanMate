@@ -27,9 +27,9 @@ FullCalendar.js
 jQuery & AJAX
 
 Bootstrap 4
+![Ekran görüntüsü_31-8-2025_235845_localhost](https://github.com/user-attachments/assets/ee1f2b4e-75ed-45d4-86f7-1f329821157a)
+![Ekran görüntüsü_1-9-2025_0034_localhost](https://github.com/user-attachments/assets/0241433a-00e8-4750-89c1-d427a439031c)
+![Ekran görüntüsü_31-8-2025_235941_localhost](https://github.com/user-attachments/assets/ce6fa575-c2b2-4dd5-83f2-56db6e6fe7b6)
+![Ekran görüntüsü_1-9-2025_0529_localhost](https://github.com/user-attachments/assets/a6388548-727f-4533-8d53-f4310f6cea3a)
+![Ekran görüntüsü_1-9-2025_0424_localhost](https://github.com/user-attachments/assets/6bb5482c-4c77-43ed-9bff-342ccd873045)
 
-![Ekran görüntüsü_1-9-2025_0424_localhost](https://github.com/user-attachments/assets/4e1d2127-c9ab-46d4-a3f3-393e2bed9524)
-![Ekran görüntüsü_1-9-2025_0529_localhost](https://github.com/user-attachments/assets/8268ecfe-da75-4e19-b1fe-3cb9fae3e79e)
-![Ekran görüntüsü_31-8-2025_235941_localhost](https://github.com/user-attachments/assets/64b52819-dc01-4f36-a6a3-be9b99a646cf)
-![Ekran görüntüsü_1-9-2025_0034_localhost](https://github.com/user-attachments/assets/d938ae08-b228-4b72-af22-994541eeb17e)
-![Ekran görüntüsü_31-8-2025_235845_localhost](https://github.com/user-attachments/assets/6152aaae-5077-470c-8f09-993aaba546b4)
